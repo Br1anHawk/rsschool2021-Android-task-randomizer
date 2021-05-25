@@ -1,5 +1,6 @@
 package com.rsschool.android2021
 
+import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -16,6 +17,17 @@ class SecondFragment : Fragment() {
 
     private var backButton: Button? = null
     private var result: TextView? = null
+
+    private var fragmentSendDataListener: OnFragmentSendDataListener? = null
+
+    interface OnFragmentSendDataListener {
+        fun onSendDataToFirstFragment(previousNumber: Int)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentSendDataListener = context as OnFragmentSendDataListener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,11 +50,7 @@ class SecondFragment : Fragment() {
         backButton?.setOnClickListener {
             // TODO: implement back
 
-            activity
-                ?.supportFragmentManager
-                ?.beginTransaction()
-                ?.replace(R.id.container, FirstFragment.newInstance(result?.text.toString().toInt()))
-                ?.commit()
+            fragmentSendDataListener?.onSendDataToFirstFragment(result?.text.toString().toInt())
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {

@@ -16,6 +16,17 @@ class FirstFragment : Fragment() {
     private var generateButton: Button? = null
     private var previousResult: TextView? = null
 
+    private var fragmentSendDataListener: OnFragmentSendDataListener? = null
+
+    interface OnFragmentSendDataListener {
+        fun onSendDataToSecondFragment(min: Int, max: Int)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentSendDataListener = context as OnFragmentSendDataListener
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,11 +69,7 @@ class FirstFragment : Fragment() {
                 else -> {
                     min = tempMinString.toInt()
                     max = tempMaxString.toInt()
-                    activity
-                        ?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, SecondFragment.newInstance(min, max))
-                        ?.commit()
+                    fragmentSendDataListener?.onSendDataToSecondFragment(min, max)
                 }
             }
             if (errorMessage.isNotEmpty()) Toast.makeText(context, errorMessage, errorMessage.length).show()
